@@ -38,5 +38,15 @@ export const themes = {
     grade2: "#A5A5A5",
     grade1: "#646464",
     grade0: "#2F2F2F"
-  }
+  },
+  dracula: {
+    background: "#282a36",
+    text: "#f8f8f2",
+    meta: "#44475a",
+    grade4: "#ff5555",
+    grade3: "#ff79c6",
+    grade2: "#bd93f9",
+    grade1: "#ffb86c",
+    grade0: "#f1fa8c"
+  },
 };
