@@ -49,4 +49,14 @@ export const themes = {
     grade1: "#ffb86c",
     grade0: "#f1fa8c"
   },
+  blue: {
+    background: "#181818",
+    text: "#C0C0C0",
+    meta: "#666666",
+    grade4: "#4F83BF",
+    grade3: "#416895",
+    grade2: "#344E6C",
+    grade1: "#263342",
+    grade0: "#222222"
+  }
 };
