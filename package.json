@@ -1,0 +1,47 @@
+{
+  "name": "github-contributions-canvas",
+  "version": "0.0.1",
+  "description": "A tool for drawing a heat-map of Github contributions on HTML Canvas",
+  "main": "dist/index.js",
+  "dependencies": {
+    "moment": "^2.22.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.46",
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/preset-env": "^7.0.0-beta.46"
+  },
+  "scripts": {
+    "build": "babel src -d dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sallar/github-contributions-canvas.git"
+  },
+  "keywords": [
+    "html",
+    "canvas",
+    "heatmap",
+    "github",
+    "contributions"
+  ],
+  "author": "Sallar Kaboli <sallar.kaboli@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sallar/github-contributions-canvas/issues"
+  },
+  "homepage": "https://github.com/sallar/github-contributions-canvas#readme",
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": 8
+          }
+        }
+      ]
+    ]
+  }
+}
