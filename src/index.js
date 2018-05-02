@@ -15,7 +15,7 @@ function getContributionCount(graphEntries) {
   }, 0);
 }
 
-const FORMAT = "YYYY-MM-DD";
+const DATE_FORMAT = "YYYY-MM-DD";
 const boxWidth = 10;
 const boxMargin = 2;
 const textHeight = 15;
@@ -40,7 +40,7 @@ function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
   const graphEntries = [];
 
   while (nextDate <= today && nextDate.day(7) <= today) {
-    const date = nextDate.format(FORMAT);
+    const date = nextDate.format(DATE_FORMAT);
     firstRowDates.push({
       date,
       info: getDateInfo(data, date)
@@ -54,7 +54,7 @@ function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
       firstRowDates.map(dateObj => {
         const date = moment(dateObj.date)
           .day(i)
-          .format(FORMAT);
+          .format(DATE_FORMAT);
         return {
           date,
           info: getDateInfo(data, date)
@@ -95,14 +95,17 @@ function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
   }
 }
 
-function drawMetaData(ctx, username, width, height) {
+function drawMetaData(ctx, opts = {}) {
+  const { username, width, height, footerText } = opts;
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
 
-  ctx.fillStyle = "#666666";
-  ctx.textBaseline = "bottom";
-  ctx.font = `10px '${fontFace}'`;
-  ctx.fillText(`Made by @sallar`, canvasMargin, height);
+  if (footerText) {
+    ctx.fillStyle = "#666666";
+    ctx.textBaseline = "bottom";
+    ctx.font = `10px '${fontFace}'`;
+    ctx.fillText(footerText, canvasMargin, height - 5);
+  }
 
   ctx.fillStyle = "#000000";
   ctx.textBaseline = "hanging";
@@ -116,8 +119,10 @@ function drawMetaData(ctx, username, width, height) {
   ctx.stroke();
 }
 
-export function drawContributions(canvas, data, username) {
-  const height = data.years.length * yearHeight + canvasMargin + headerHeight;
+export function drawContributions(canvas, opts) {
+  const { data, username } = opts;
+  const height =
+    data.years.length * yearHeight + canvasMargin + headerHeight + 10;
   const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
 
   canvas.width = width * scaleFactor;
@@ -127,7 +132,11 @@ export function drawContributions(canvas, data, username) {
   ctx.scale(scaleFactor, scaleFactor);
   ctx.textBaseline = "hanging";
 
-  drawMetaData(ctx, username, width, height);
+  drawMetaData(ctx, {
+    ...opts,
+    width,
+    height
+  });
 
   data.years.forEach((year, i) => {
     const offsetY = yearHeight * i + canvasMargin + headerHeight;
