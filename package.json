@@ -1,6 +1,6 @@
 {
   "name": "github-contributions-canvas",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A tool for drawing a heat-map of Github contributions on HTML Canvas",
   "main": "dist/index.js",
   "dependencies": {
