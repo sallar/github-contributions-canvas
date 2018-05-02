@@ -1,4 +1,13 @@
 import moment from "moment";
+import { themes } from "./themes";
+
+function getTheme(opts = {}) {
+  const { themeName } = opts;
+  if (themeName in themes) {
+    return themes[themeName];
+  }
+  return themes.standard;
+}
 
 function getDateInfo(data, date) {
   return data.contributions.find(contrib => contrib.date === date);
@@ -25,11 +34,13 @@ const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 7 + canvasMargin;
 const scaleFactor = window.devicePixelRatio || 1;
 
-function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
+function drawYear(ctx, opts = {}) {
+  const { year, offsetX = 0, offsetY = 0, data } = opts;
   const thisYear = moment().format("YYYY");
   const today = year.year === thisYear ? moment() : moment(year.range.end);
   const start = moment(`${year.year}-01-01`);
   const firstDate = start.clone();
+  const theme = getTheme(opts);
 
   if (firstDate.day() !== 6) {
     firstDate.day(-(firstDate.day() + 1 % 7));
@@ -68,7 +79,7 @@ function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
   );
 
   ctx.textBaseline = "hanging";
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = theme.text;
   ctx.font = `10px '${fontFace}'`;
   ctx.fillText(
     `${year.year}: ${count} Contribution${year.total === 1 ? "" : "s"}${
@@ -84,7 +95,8 @@ function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
       if (moment(day.date) > today || !day.info) {
         continue;
       }
-      ctx.fillStyle = day.info.color;
+      const color = theme[`grade${day.info.intensity}`];
+      ctx.fillStyle = color;
       ctx.fillRect(
         offsetX + (boxWidth + boxMargin) * x,
         offsetY + textHeight + (boxWidth + boxMargin) * y,
@@ -97,17 +109,18 @@ function drawYear(ctx, year, offsetX = 0, offsetY = 0, data) {
 
 function drawMetaData(ctx, opts = {}) {
   const { username, width, height, footerText } = opts;
-  ctx.fillStyle = "#ffffff";
+  const theme = getTheme(opts);
+  ctx.fillStyle = theme.background;
   ctx.fillRect(0, 0, width, height);
 
   if (footerText) {
-    ctx.fillStyle = "#666666";
+    ctx.fillStyle = theme.meta;
     ctx.textBaseline = "bottom";
     ctx.font = `10px '${fontFace}'`;
     ctx.fillText(footerText, canvasMargin, height - 5);
   }
 
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = theme.text;
   ctx.textBaseline = "hanging";
   ctx.font = `20px '${fontFace}'`;
   ctx.fillText(`@${username} on Github`, canvasMargin, canvasMargin);
@@ -115,7 +128,7 @@ function drawMetaData(ctx, opts = {}) {
   ctx.beginPath();
   ctx.moveTo(canvasMargin, 55);
   ctx.lineTo(width - canvasMargin, 55);
-  ctx.strokeStyle = "#EBEDF0";
+  ctx.strokeStyle = theme.grade0;
   ctx.stroke();
 }
 
@@ -141,6 +154,12 @@ export function drawContributions(canvas, opts) {
   data.years.forEach((year, i) => {
     const offsetY = yearHeight * i + canvasMargin + headerHeight;
     const offsetX = canvasMargin;
-    drawYear(ctx, year, offsetX, offsetY, data);
+    drawYear(ctx, {
+      ...opts,
+      year,
+      offsetX,
+      offsetY,
+      data
+    });
   });
 }
