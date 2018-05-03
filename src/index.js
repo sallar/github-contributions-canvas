@@ -120,6 +120,17 @@ function drawMetaData(ctx, opts = {}) {
     ctx.fillText(footerText, canvasMargin, height - 5);
   }
 
+  // chart legend
+  let themeGrades = 5;
+  ctx.fillStyle = theme.text;
+  ctx.fillText('Less', width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 55, 37);
+  ctx.fillText('More', (width - canvasMargin) - 25, 37);
+  for (let x = 0; x < 5; x += 1) {
+    ctx.fillStyle = theme[`grade${x}`];
+    ctx.fillRect(width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27,textHeight + boxWidth,10,10);
+    themeGrades -= 1;
+  }
+
   ctx.fillStyle = theme.text;
   ctx.textBaseline = "hanging";
   ctx.font = `20px '${fontFace}'`;
