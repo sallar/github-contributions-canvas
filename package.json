@@ -9,12 +9,17 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.46",
     "@babel/core": "^7.0.0-beta.46",
-    "@babel/preset-env": "^7.0.0-beta.46"
+    "@babel/preset-env": "^7.0.0-beta.46",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^22.4.3",
+    "canvas": "^2.0.0-alpha.12",
+    "jest": "^22.4.3",
+    "regenerator-runtime": "^0.11.1"
   },
   "scripts": {
     "build": "babel src -d dist",
     "prepare": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
