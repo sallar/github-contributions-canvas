@@ -28,14 +28,20 @@ const DATE_FORMAT = "YYYY-MM-DD";
 const boxWidth = 10;
 const boxMargin = 2;
 const textHeight = 15;
-const fontFace = "IBM Plex Mono";
+const defaultFontFace = "IBM Plex Mono";
 const headerHeight = 60;
 const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 7 + canvasMargin;
 const scaleFactor = window.devicePixelRatio || 1;
 
 function drawYear(ctx, opts = {}) {
-  const { year, offsetX = 0, offsetY = 0, data } = opts;
+  const {
+    year,
+    offsetX = 0,
+    offsetY = 0,
+    data,
+    fontFace = defaultFontFace
+  } = opts;
   const thisYear = moment().format("YYYY");
   const today = year.year === thisYear ? moment() : moment(year.range.end);
   const start = moment(`${year.year}-01-01`);
@@ -108,7 +114,13 @@ function drawYear(ctx, opts = {}) {
 }
 
 function drawMetaData(ctx, opts = {}) {
-  const { username, width, height, footerText } = opts;
+  const {
+    username,
+    width,
+    height,
+    footerText,
+    fontFace = defaultFontFace
+  } = opts;
   const theme = getTheme(opts);
   ctx.fillStyle = theme.background;
   ctx.fillRect(0, 0, width, height);

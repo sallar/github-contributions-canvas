@@ -8,7 +8,8 @@ test("draws contributions correctly", () => {
     data: mockData,
     username: "sallar",
     footerText: "test",
-    theme: "standard"
+    theme: "standard",
+    fontFace: "Arial"
   });
   expect(canvas.toDataURL()).toMatchSnapshot();
 });
