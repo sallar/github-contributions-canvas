@@ -58,5 +58,15 @@ export const themes = {
     grade2: "#344E6C",
     grade1: "#263342",
     grade0: "#222222"
+  },
+  panda: {
+    background: "#2B2C2F",
+    text: "#E6E6E6",
+    meta: "#676B79",
+    grade4: "#FF4B82",
+    grade3: "#19f9d8",
+    grade2: "#6FC1FF",
+    grade1: "#34353B",
+    grade0: "#242526"
   }
 };
