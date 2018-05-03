@@ -43,7 +43,7 @@ Sallar Kaboli © [MIT License](LICENSE)
 
 [npm-image]: https://badge.fury.io/js/github-contributions-canvas.svg
 [npm-url]: https://npmjs.org/package/github-contributions-canvas
-[travis-image]: https://travis-ci.org/sallar/github-contributions-canvas.svg?branch=master
-[travis-url]: https://travis-ci.org/sallar/github-contributions-canvas
+[travis-image]: https://travis-ci.com/sallar/github-contributions-canvas.svg?branch=master
+[travis-url]: https://travis-ci.com/sallar/github-contributions-canvas
 [daviddm-image]: https://david-dm.org/sallar/github-contributions-canvas.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/sallar/github-contributions-canvas
