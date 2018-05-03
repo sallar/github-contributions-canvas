@@ -40,14 +40,14 @@ export const themes = {
     grade0: "#2F2F2F"
   },
   dracula: {
-    background: "#282a36",
+    background: "#181818",
     text: "#f8f8f2",
-    meta: "#44475a",
-    grade4: "#ff5555",
-    grade3: "#ff79c6",
-    grade2: "#bd93f9",
-    grade1: "#ffb86c",
-    grade0: "#f1fa8c"
+    meta: "#666666",
+    grade4: "#ff79c6",
+    grade3: "#bd93f9",
+    grade2: "#6272a4",
+    grade1: "#44475a",
+    grade0: "#282a36"
   },
   blue: {
     background: "#181818",
