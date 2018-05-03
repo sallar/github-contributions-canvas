@@ -123,7 +123,7 @@ function drawMetaData(ctx, opts = {}) {
   ctx.fillStyle = theme.text;
   ctx.textBaseline = "hanging";
   ctx.font = `20px '${fontFace}'`;
-  ctx.fillText(`@${username} on Github`, canvasMargin, canvasMargin);
+  ctx.fillText(`@${username} on GitHub`, canvasMargin, canvasMargin);
 
   ctx.beginPath();
   ctx.moveTo(canvasMargin, 55);
