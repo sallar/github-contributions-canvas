@@ -1,4 +1,14 @@
 export const themes = {
+  __test__: {
+    background: "#ffffff",
+    text: "#ffffff",
+    meta: "#ffffff",
+    grade4: "#196127",
+    grade3: "#239a3b",
+    grade2: "#7bc96f",
+    grade1: "#c6e48b",
+    grade0: "#ebedf0"
+  },
   standard: {
     background: "#ffffff",
     text: "#000000",

@@ -13,7 +13,7 @@ test("draws contributions correctly", () => {
     data: mockData,
     username: "sallar",
     footerText: "test",
-    theme: "standard",
+    themeName: "__test__",
     fontFace: "PlexMono"
   });
   expect(canvas.toDataURL()).toMatchSnapshot();
