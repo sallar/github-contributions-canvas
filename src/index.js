@@ -120,7 +120,7 @@ function drawYear(ctx, opts = {}) {
     const firstMonthIsDec = month == 12 && y == 0;
     const monthChanged = month !== lastCountedMonth;
     if (monthChanged && !firstMonthIsDec) {
-      ctx.fillStyle = theme.text;
+      ctx.fillStyle = theme.meta;
       ctx.fillText(date.format('MMM'), offsetX + (boxWidth + boxMargin) * y, offsetY);
       lastCountedMonth = month;
     }
