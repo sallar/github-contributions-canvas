@@ -31,7 +31,7 @@ const textHeight = 15;
 const defaultFontFace = "IBM Plex Mono";
 const headerHeight = 60;
 const canvasMargin = 20;
-const yearHeight = textHeight + (boxWidth + boxMargin) * 7 + canvasMargin;
+const yearHeight = textHeight + (boxWidth + boxMargin) * 8 + canvasMargin;
 const scaleFactor = window.devicePixelRatio || 1;
 
 function drawYear(ctx, opts = {}) {
@@ -92,7 +92,7 @@ function drawYear(ctx, opts = {}) {
       thisYear === year.year ? " (so far)" : ""
     }`,
     offsetX,
-    offsetY
+    offsetY - 17
   );
 
   for (let y = 0; y < graphEntries.length; y += 1) {
@@ -100,7 +100,7 @@ function drawYear(ctx, opts = {}) {
       const day = graphEntries[y][x];
       if (moment(day.date) > today || !day.info) {
         continue;
-      }
+      }    
       const color = theme[`grade${day.info.intensity}`];
       ctx.fillStyle = color;
       ctx.fillRect(
@@ -109,6 +109,20 @@ function drawYear(ctx, opts = {}) {
         10,
         10
       );
+    }
+  }
+
+  // Draw Month Label
+  let lastCountedMonth = 0;
+  for (let y = 0; y < graphEntries[0].length; y += 1) {
+    const date = moment(graphEntries[0][y].date);
+    const month = date.month() + 1;
+    const firstMonthIsDec = month == 12 && y == 0;
+    const monthChanged = month !== lastCountedMonth;
+    if (monthChanged && !firstMonthIsDec) {
+      ctx.fillStyle = theme.text;
+      ctx.fillText(date.format('MMM'), offsetX + (boxWidth + boxMargin) * y, offsetY);
+      lastCountedMonth = month;
     }
   }
 }
