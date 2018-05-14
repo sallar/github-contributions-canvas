@@ -78,5 +78,15 @@ export const themes = {
     grade2: "#6FC1FF",
     grade1: "#34353B",
     grade0: "#242526"
+  },
+  sunny: {
+    background: "#ffffff",
+    text: "#000000",
+    meta: "#666666",
+    grade4: "#a98600",
+    grade3: "#dab600",
+    grade2: "#e9d700",
+    grade1: "#f8ed62",
+    grade0: "#fff9ae"
   }
 };
