@@ -201,7 +201,7 @@ export function drawContributions(canvas, opts) {
   });
 }
 
-function drawEmptyLineGraph(canvas, opt) {
+function drawEmptyLineGraph(canvas, opts = {}) {
   const {
     xAxis,
     yAxis,
