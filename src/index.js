@@ -100,7 +100,7 @@ function drawYear(ctx, opts = {}) {
       const day = graphEntries[y][x];
       if (moment(day.date) > today || !day.info) {
         continue;
-      }    
+      }
       const color = theme[`grade${day.info.intensity}`];
       ctx.fillStyle = color;
       ctx.fillRect(
@@ -198,5 +198,145 @@ export function drawContributions(canvas, opts) {
       offsetY,
       data
     });
+  });
+}
+
+function drawEmptyLineGraph(canvas, opt) {
+  const {
+    xAxis,
+    yAxis,
+    lineGraphHeight,
+    yAxisMargin,
+    xAxisMargin
+  } = opts;
+  const theme = getTheme(opts);
+
+  ctx.beginPath();
+  ctx.moveTo(yAxisMargin + canvasMargin, 70);
+  ctx.lineTo(yAxisMargin + canvasMargin, yAxis - xAxisMargin);
+  ctx.strokeStyle = theme.grade4;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(yAxisMargin + 5, lineGraphHeight + 70 - xAxisMargin);
+  ctx.lineTo(yAxisMargin + xAxis, lineGraphHeight + 70 - xAxisMargin);
+  ctx.strokeStyle = theme.grade4;
+  ctx.stroke();
+  ctx.save();
+
+  ctx.fillStyle = theme.text;
+  ctx.textBaseline = "hanging";
+  ctx.font = `10px '${fontFace}'`;
+  ctx.translate(canvasMargin-15, lineGraphHeight/2 + 70);
+  ctx.rotate(Math.PI/-2)
+  ctx.fillText("contributions", 0, 0);
+  ctx.restore();
+}
+
+
+function Point(x,y,total) {
+  this.x = x;
+  this.y = y;
+  this.total = total;
+}
+
+export function drawLineGraph(canvas, opts) {
+  const { data, username } = opts;
+  const lineGraphHeight = 500;
+  const xAxisMargin = 50;
+  const tickLength = 30;
+  const yAxisMargin = 50;
+  const yAxis = lineGraphHeight + 85;
+  const height =
+    lineGraphHeight + canvasMargin + headerHeight + xAxisMargin + 10;
+  const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
+  const xAxis = width - 100; //length of line of x axis
+  const theme = getTheme(opts);
+  const {
+    footerText,
+    fontFace = defaultFontFace
+  } = opts;
+  canvas.width = width * scaleFactor;
+  canvas.height = height * scaleFactor;
+
+  const ctx = canvas.getContext("2d");
+  ctx.scale(scaleFactor, scaleFactor);
+  ctx.textBaseline = "hanging";
+
+  drawMetaData(ctx, {
+    ...opts,
+    width,
+    height
+  });
+
+  drawEmptyLineGraph(ctx, {
+    ...opts,
+    xAxis,
+    yAxis,
+    lineGraphHeight,
+    yAxisMargin,
+    xAxisMargin
+  })
+
+  var total = 0;
+  var largestYear = 0;
+  var smallestYear = 0;
+  data.years.forEach((year) => {
+    total += year.total;
+    largestYear = year.total>largestYear ? year.total:largestYear;
+    smallestYear = year.total<smallestYear ? year.total:smallestYear;
+  });
+  const pointSpacingY=largestYear/(lineGraphHeight-xAxisMargin); //Space betweeen each point in the graph based on the largest value and the height of the available space
+  var xAxisSpacing = xAxis/(data.years.length); //Space between tick marks
+  const rectangleWidth = 10;
+  var points = []; //Array of the points added to the grpah and thier x y location with respect to the webpage
+  var contributions = []; //Array of all the total contributions added to the graph already
+  data.years.reverse();//Start at earliest year
+  data.years.forEach((year, i) => {
+    var point = new Point(yAxisMargin+canvasMargin+(xAxisSpacing*i), lineGraphHeight + 70 - xAxisMargin-year.total/pointSpacingY, year.total)
+    points.push(point);
+
+    if (!contributions.includes(year.total)) {
+      if (point.total != smallestYear && smallestYear != largestYear) {
+        ctx.beginPath();
+        ctx.moveTo(yAxisMargin + canvasMargin - tickLength/2, point.y);
+        ctx.lineTo(yAxisMargin + canvasMargin + tickLength/2 , point.y);
+        ctx.strokeStyle = theme.grade3;
+        ctx.stroke();
+      }
+      ctx.fillStyle = theme.text;
+      ctx.textBaseline = "hanging";
+      ctx.font = `10px '${fontFace}'`;
+      ctx.fillText(year.total, canvasMargin, point.y-rectangleWidth/2,yAxisMargin);
+
+      contributions.push(year.total);
+    }
+
+    if(point.x != yAxisMargin+canvasMargin) {
+      ctx.beginPath();
+      ctx.moveTo(point.x, lineGraphHeight + 70 - xAxisMargin - tickLength/2);
+      ctx.lineTo(point.x, lineGraphHeight + 70 - xAxisMargin + tickLength/2);
+      ctx.strokeStyle = theme.grade3;
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = theme.text;
+    ctx.textBaseline = "hanging";
+    ctx.font = `10px '${fontFace}'`;
+    ctx.fillText(year.year, point.x-13, lineGraphHeight - xAxisMargin + tickLength/2 + 120);
+
+    ctx.fillStyle = theme.grade1;
+    ctx.fillRect(point.x-rectangleWidth/2, point.y-rectangleWidth/2,rectangleWidth,rectangleWidth);
+  });
+
+  points.forEach((point, i) => {
+    if(i != 0) {
+      ctx.lineTo(point.x,point.y+5);
+      ctx.strokeStyle = theme.grade1;
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(point.x,point.y+5);
+    }
   });
 }
