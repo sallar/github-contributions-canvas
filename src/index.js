@@ -288,6 +288,7 @@ export function drawLineGraph(canvas, opts) {
     smallestYear = year.total<smallestYear ? year.total:smallestYear;
   });
   const pointSpacingY=largestYear/(lineGraphHeight-xAxisMargin); //Space betweeen each point in the graph based on the largest value and the height of the available space
+  const allowedSpace = 10; //Amount of space allowed between y axis values
   var xAxisSpacing = xAxis/(data.years.length); //Space between tick marks
   const rectangleWidth = 10;
   var points = []; //Array of the points added to the grpah and thier x y location with respect to the webpage
@@ -295,7 +296,6 @@ export function drawLineGraph(canvas, opts) {
   data.years.reverse();//Start at earliest year
   data.years.forEach((year, i) => {
     var point = new Point(yAxisMargin+canvasMargin+(xAxisSpacing*i), lineGraphHeight + 70 - xAxisMargin-year.total/pointSpacingY, year.total)
-    points.push(point);
 
     if (!contributions.includes(year.total)) {
       if (point.total != smallestYear && smallestYear != largestYear) {
@@ -305,10 +305,12 @@ export function drawLineGraph(canvas, opts) {
         ctx.strokeStyle = theme.grade3;
         ctx.stroke();
       }
-      ctx.fillStyle = theme.text;
-      ctx.textBaseline = "hanging";
-      ctx.font = `10px '${fontFace}'`;
-      ctx.fillText(year.total, canvasMargin, point.y-rectangleWidth/2,yAxisMargin);
+      if(!yAxisTextOverlap(points, point.y, allowedSpace)) {
+        ctx.fillStyle = theme.text;
+        ctx.textBaseline = "hanging";
+        ctx.font = `10px '${fontFace}'`;
+        ctx.fillText(year.total, canvasMargin, point.y-rectangleWidth/2,yAxisMargin);
+      }
 
       contributions.push(year.total);
     }
@@ -328,16 +330,27 @@ export function drawLineGraph(canvas, opts) {
 
     ctx.fillStyle = theme.grade1;
     ctx.fillRect(point.x-rectangleWidth/2, point.y-rectangleWidth/2,rectangleWidth,rectangleWidth);
+    points.push(point);
   });
 
   points.forEach((point, i) => {
     if(i != 0) {
-      ctx.lineTo(point.x,point.y+5);
+      ctx.lineTo(point.x,point.y);
       ctx.strokeStyle = theme.grade1;
       ctx.stroke();
     } else {
       ctx.beginPath();
-      ctx.moveTo(point.x,point.y+5);
+      ctx.moveTo(point.x,point.y);
     }
   });
+}
+
+function yAxisTextOverlap(points, y, allowedSpace) {
+    var returnVal = false;
+    points.forEach((point, i) => {
+      if (Math.abs(point.y-y)<allowedSpace) {
+        returnVal = true;
+      }
+    });
+    return returnVal;
 }
