@@ -207,7 +207,8 @@ function drawEmptyLineGraph(ctx, opts = {}) {
     yAxis,
     lineGraphHeight,
     yAxisMargin,
-    xAxisMargin
+    xAxisMargin,
+    fontFace = defaultFontFace
   } = opts;
   const theme = getTheme(opts);
 
