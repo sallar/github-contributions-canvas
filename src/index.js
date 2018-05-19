@@ -201,46 +201,11 @@ export function drawContributions(canvas, opts) {
   });
 }
 
-function drawEmptyLineGraph(ctx, opts = {}) {
-  const {
-    xAxis,
-    yAxis,
-    lineGraphHeight,
-    yAxisMargin,
-    xAxisMargin,
-    fontFace = defaultFontFace
-  } = opts;
-  const theme = getTheme(opts);
-
-  ctx.beginPath();
-  ctx.moveTo(yAxisMargin + canvasMargin, 70);
-  ctx.lineTo(yAxisMargin + canvasMargin, yAxis - xAxisMargin);
-  ctx.strokeStyle = theme.grade4;
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(yAxisMargin + 5, lineGraphHeight + 70 - xAxisMargin);
-  ctx.lineTo(yAxisMargin + xAxis, lineGraphHeight + 70 - xAxisMargin);
-  ctx.strokeStyle = theme.grade4;
-  ctx.stroke();
-  ctx.save();
-
-  ctx.fillStyle = theme.text;
-  ctx.textBaseline = "hanging";
-  ctx.font = `10px '${fontFace}'`;
-  ctx.translate(canvasMargin-15, lineGraphHeight/2 + 70);
-  ctx.rotate(Math.PI/-2)
-  ctx.fillText("contributions", 0, 0);
-  ctx.restore();
-}
-
-
-function Point(x,y,total) {
-  this.x = x;
-  this.y = y;
-  this.total = total;
-}
-
+/**
+ * Draws a line graph of your github contributions over time
+ * @param canvas the canvas element used to draw the graph
+ * @param opts other options including the username, font, footerText, etc.
+ */
 export function drawLineGraph(canvas, opts) {
   const { data, username } = opts;
   const lineGraphHeight = 500;
@@ -278,6 +243,7 @@ export function drawLineGraph(canvas, opts) {
     yAxisMargin,
     xAxisMargin
   })
+
 
   var total = 0;
   var largestYear = 0;
@@ -328,23 +294,84 @@ export function drawLineGraph(canvas, opts) {
     ctx.font = `10px '${fontFace}'`;
     ctx.fillText(year.year, point.x-13, lineGraphHeight - xAxisMargin + tickLength/2 + 120);
 
-    ctx.fillStyle = theme.grade1;
-    ctx.fillRect(point.x-rectangleWidth/2, point.y-rectangleWidth/2,rectangleWidth,rectangleWidth);
     points.push(point);
   });
 
   points.forEach((point, i) => {
     if(i != 0) {
       ctx.lineTo(point.x,point.y);
-      ctx.strokeStyle = theme.grade1;
+      ctx.strokeStyle = theme.grade2;
       ctx.stroke();
     } else {
       ctx.beginPath();
       ctx.moveTo(point.x,point.y);
     }
   });
+
+  points.forEach((point, i) => {
+    ctx.fillStyle = theme.grade1;
+    ctx.fillRect(point.x-rectangleWidth/2, point.y-rectangleWidth/2,rectangleWidth,rectangleWidth);
+  })
 }
 
+/**
+ * Draws an empty graph with an x and y axis
+ * @param ctx the canvas used to draw
+ * @param opts other options
+ */
+function drawEmptyLineGraph(ctx, opts = {}) {
+  const {
+    xAxis,
+    yAxis,
+    lineGraphHeight,
+    yAxisMargin,
+    xAxisMargin,
+    fontFace = defaultFontFace
+  } = opts;
+  const theme = getTheme(opts);
+
+  ctx.beginPath();
+  ctx.moveTo(yAxisMargin + canvasMargin, 70);
+  ctx.lineTo(yAxisMargin + canvasMargin, yAxis - xAxisMargin);
+  ctx.strokeStyle = theme.grade4;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(yAxisMargin + 5, lineGraphHeight + 70 - xAxisMargin);
+  ctx.lineTo(yAxisMargin + xAxis, lineGraphHeight + 70 - xAxisMargin);
+  ctx.strokeStyle = theme.grade4;
+  ctx.stroke();
+  ctx.save();
+
+  ctx.fillStyle = theme.text;
+  ctx.textBaseline = "hanging";
+  ctx.font = `10px '${fontFace}'`;
+  ctx.translate(canvasMargin-15, lineGraphHeight/2 + 70);
+  ctx.rotate(Math.PI/-2)
+  ctx.fillText("contributions", 0, 0);
+  ctx.restore();
+}
+
+/**
+ * Point object
+ * @param x horizontal location in the page
+ * @param y vertical location in the page
+ * @param total number of contributions
+ */
+function Point(x,y,total) {
+  this.x = x;
+  this.y = y;
+  this.total = total;
+}
+
+/**
+ * Checks if any other points have similar y values
+ * This stops the y axis from getting super crowded with values.
+ * @param points array of point objects already added to the graph
+ * @param y vertical spot in the page for the new point
+ * @param allowedSpace the amount of space allowed between values on the y axis
+ * @returns boolean whether the point im trying to add will overlap something
+ */
 function yAxisTextOverlap(points, y, allowedSpace) {
     var returnVal = false;
     points.forEach((point, i) => {
