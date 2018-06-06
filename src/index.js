@@ -49,7 +49,7 @@ function drawYear(ctx, opts = {}) {
   const theme = getTheme(opts);
 
   if (firstDate.day() !== 6) {
-    firstDate.day(-(firstDate.day() + 1 % 7));
+    firstDate.day(-(firstDate.day() + (1 % 7)));
   }
 
   const nextDate = firstDate.clone();
@@ -121,7 +121,11 @@ function drawYear(ctx, opts = {}) {
     const monthChanged = month !== lastCountedMonth;
     if (monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
-      ctx.fillText(date.format('MMM'), offsetX + (boxWidth + boxMargin) * y, offsetY);
+      ctx.fillText(
+        date.format("MMM"),
+        offsetX + (boxWidth + boxMargin) * y,
+        offsetY
+      );
       lastCountedMonth = month;
     }
   }
@@ -149,11 +153,20 @@ function drawMetaData(ctx, opts = {}) {
   // chart legend
   let themeGrades = 5;
   ctx.fillStyle = theme.text;
-  ctx.fillText('Less', width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 55, 37);
-  ctx.fillText('More', (width - canvasMargin) - 25, 37);
+  ctx.fillText(
+    "Less",
+    width - canvasMargin - (boxWidth + boxMargin) * themeGrades - 55,
+    37
+  );
+  ctx.fillText("More", width - canvasMargin - 25, 37);
   for (let x = 0; x < 5; x += 1) {
     ctx.fillStyle = theme[`grade${x}`];
-    ctx.fillRect(width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27,textHeight + boxWidth,10,10);
+    ctx.fillRect(
+      width - canvasMargin - (boxWidth + boxMargin) * themeGrades - 27,
+      textHeight + boxWidth,
+      10,
+      10
+    );
     themeGrades -= 1;
   }
 
@@ -218,10 +231,7 @@ export function drawLineGraph(canvas, opts) {
   const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
   const xAxis = width - 100; //length of line of x axis
   const theme = getTheme(opts);
-  const {
-    footerText,
-    fontFace = defaultFontFace
-  } = opts;
+  const { footerText, fontFace = defaultFontFace } = opts;
   canvas.width = width * scaleFactor;
   canvas.height = height * scaleFactor;
 
@@ -242,49 +252,57 @@ export function drawLineGraph(canvas, opts) {
     lineGraphHeight,
     yAxisMargin,
     xAxisMargin
-  })
-
-
-  var total = 0;
-  var largestYear = 0;
-  var smallestYear = 0;
-  data.years.forEach((year) => {
-    total += year.total;
-    largestYear = year.total>largestYear ? year.total:largestYear;
-    smallestYear = year.total<smallestYear ? year.total:smallestYear;
   });
-  const pointSpacingY=largestYear/(lineGraphHeight-xAxisMargin); //Space betweeen each point in the graph based on the largest value and the height of the available space
-  const allowedSpace = 10; //Amount of space allowed between y axis values
-  var xAxisSpacing = xAxis/(data.years.length); //Space between tick marks
-  const rectangleWidth = 10;
-  var points = []; //Array of the points added to the grpah and thier x y location with respect to the webpage
-  var contributions = []; //Array of all the total contributions added to the graph already
-  data.years.reverse();//Start at earliest year
-  data.years.forEach((year, i) => {
-    var point = new Point(yAxisMargin+canvasMargin+(xAxisSpacing*i), lineGraphHeight + 70 - xAxisMargin-year.total/pointSpacingY, year.total)
 
-    if (!contributions.includes(year.total)) {
-      if (point.total != smallestYear && smallestYear != largestYear) {
+  let total = 0;
+  let largestYear = 0;
+  let smallestYear = 0;
+  data.years.forEach(year => {
+    total += year.total;
+    largestYear = year.total > largestYear ? year.total : largestYear;
+    smallestYear = year.total < smallestYear ? year.total : smallestYear;
+  });
+  const pointSpacingY = largestYear / (lineGraphHeight - xAxisMargin); //Space betweeen each point in the graph based on the largest value and the height of the available space
+  const allowedSpace = 10; //Amount of space allowed between y axis values
+  let xAxisSpacing = xAxis / data.years.length; //Space between tick marks
+  const rectangleWidth = 10;
+  let points = []; //Array of the points added to the grpah and thier x y location with respect to the webpage
+  let contributions = []; //Array of all the total contributions added to the graph already
+  data.years.reverse(); //Start at earliest year
+  data.years.forEach((year, i) => {
+    let point = new Point(
+      yAxisMargin + canvasMargin + xAxisSpacing * i,
+      lineGraphHeight + 70 - xAxisMargin - year.total / pointSpacingY,
+      year.total
+    );
+
+    if (contributions.includes(year.total) === false) {
+      if (point.total !== smallestYear && smallestYear !== largestYear) {
         ctx.beginPath();
-        ctx.moveTo(yAxisMargin + canvasMargin - tickLength/2, point.y);
-        ctx.lineTo(yAxisMargin + canvasMargin + tickLength/2 , point.y);
+        ctx.moveTo(yAxisMargin + canvasMargin - tickLength / 2, point.y);
+        ctx.lineTo(yAxisMargin + canvasMargin + tickLength / 2, point.y);
         ctx.strokeStyle = theme.grade3;
         ctx.stroke();
       }
-      if(!yAxisTextOverlap(points, point.y, allowedSpace)) {
+      if (!yAxisTextOverlap(points, point.y, allowedSpace)) {
         ctx.fillStyle = theme.text;
         ctx.textBaseline = "hanging";
         ctx.font = `10px '${fontFace}'`;
-        ctx.fillText(year.total, canvasMargin, point.y-rectangleWidth/2,yAxisMargin);
+        ctx.fillText(
+          year.total,
+          canvasMargin,
+          point.y - rectangleWidth / 2,
+          yAxisMargin
+        );
       }
 
       contributions.push(year.total);
     }
 
-    if(point.x != yAxisMargin+canvasMargin) {
+    if (point.x !== yAxisMargin + canvasMargin) {
       ctx.beginPath();
-      ctx.moveTo(point.x, lineGraphHeight + 70 - xAxisMargin - tickLength/2);
-      ctx.lineTo(point.x, lineGraphHeight + 70 - xAxisMargin + tickLength/2);
+      ctx.moveTo(point.x, lineGraphHeight + 70 - xAxisMargin - tickLength / 2);
+      ctx.lineTo(point.x, lineGraphHeight + 70 - xAxisMargin + tickLength / 2);
       ctx.strokeStyle = theme.grade3;
       ctx.stroke();
     }
@@ -292,26 +310,35 @@ export function drawLineGraph(canvas, opts) {
     ctx.fillStyle = theme.text;
     ctx.textBaseline = "hanging";
     ctx.font = `10px '${fontFace}'`;
-    ctx.fillText(year.year, point.x-13, lineGraphHeight - xAxisMargin + tickLength/2 + 120);
+    ctx.fillText(
+      year.year,
+      point.x - 13,
+      lineGraphHeight - xAxisMargin + tickLength / 2 + 120
+    );
 
     points.push(point);
   });
 
   points.forEach((point, i) => {
-    if(i != 0) {
-      ctx.lineTo(point.x,point.y);
+    if (i != 0) {
+      ctx.lineTo(point.x, point.y);
       ctx.strokeStyle = theme.grade2;
       ctx.stroke();
     } else {
       ctx.beginPath();
-      ctx.moveTo(point.x,point.y);
+      ctx.moveTo(point.x, point.y);
     }
   });
 
   points.forEach((point, i) => {
     ctx.fillStyle = theme.grade1;
-    ctx.fillRect(point.x-rectangleWidth/2, point.y-rectangleWidth/2,rectangleWidth,rectangleWidth);
-  })
+    ctx.fillRect(
+      point.x - rectangleWidth / 2,
+      point.y - rectangleWidth / 2,
+      rectangleWidth,
+      rectangleWidth
+    );
+  });
 }
 
 /**
@@ -346,8 +373,8 @@ function drawEmptyLineGraph(ctx, opts = {}) {
   ctx.fillStyle = theme.text;
   ctx.textBaseline = "hanging";
   ctx.font = `10px '${fontFace}'`;
-  ctx.translate(canvasMargin-15, lineGraphHeight/2 + 70);
-  ctx.rotate(Math.PI/-2)
+  ctx.translate(canvasMargin - 15, lineGraphHeight / 2 + 70);
+  ctx.rotate(Math.PI / -2);
   ctx.fillText("contributions", 0, 0);
   ctx.restore();
 }
@@ -358,7 +385,7 @@ function drawEmptyLineGraph(ctx, opts = {}) {
  * @param y vertical location in the page
  * @param total number of contributions
  */
-function Point(x,y,total) {
+function Point(x, y, total) {
   this.x = x;
   this.y = y;
   this.total = total;
@@ -373,11 +400,11 @@ function Point(x,y,total) {
  * @returns boolean whether the point im trying to add will overlap something
  */
 function yAxisTextOverlap(points, y, allowedSpace) {
-    var returnVal = false;
-    points.forEach((point, i) => {
-      if (Math.abs(point.y-y)<allowedSpace) {
-        returnVal = true;
-      }
-    });
-    return returnVal;
+  let returnVal = false;
+  points.forEach((point, i) => {
+    if (Math.abs(point.y - y) < allowedSpace) {
+      returnVal = true;
+    }
+  });
+  return returnVal;
 }
