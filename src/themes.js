@@ -88,5 +88,15 @@ export const themes = {
     grade2: "#e9d700",
     grade1: "#f8ed62",
     grade0: "#fff9ae"
+  },
+  pink: {
+    background: "#ffffff",
+    text: "#000000",
+    meta: "#666666",
+    grade4: "#61185f",
+    grade3: "#a74aa8",
+    grade2: "#ca5bcc",
+    grade1: "#e48bdc",
+    grade0: "#ebedf0"
   }
 };
