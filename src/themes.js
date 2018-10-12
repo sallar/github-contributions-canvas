@@ -98,5 +98,15 @@ export const themes = {
     grade2: "#ca5bcc",
     grade1: "#e48bdc",
     grade0: "#ebedf0"
+  },
+  viridis: {
+    background: "#ffffff",
+    text: "#000000",
+    meta: "#666666",
+    grade4: "#440154",
+    grade3: "#3b528b",
+    grade2: "#21918c",
+    grade1: "#5ec962",
+    grade0: "#fde725"
   }
 };
