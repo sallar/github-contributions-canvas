@@ -25,13 +25,18 @@ drawContributions(canvasEl, {
 
 ## Available Themes
 
+The themes are defined in the [`src/themes.js`](src/themes.js) file.
+Currently the available themes are:
+
 - `standard`
-- `teal`
 - `halloween`
+- `teal`
 - `leftPad`
-- `panda`
-- `blue`
 - `dracula`
+- `blue`
+- `panda`
+- `sunny`
+- `pink`
 
 ## Data Format
 
