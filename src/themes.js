@@ -98,5 +98,15 @@ export const themes = {
     grade2: "#ca5bcc",
     grade1: "#e48bdc",
     grade0: "#ebedf0"
+  },
+  YlGnBu: { // http://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=5
+    background: "#ffffff",
+    text: "#000000",
+    meta: "#666666",
+    grade4: "#253494",
+    grade3: "#2c7fb8",
+    grade2: "#41b6c4",
+    grade1: "#a1dab4",
+    grade0: "#ebedf0"
   }
 };
