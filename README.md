@@ -37,6 +37,7 @@ Currently the available themes are:
 - `panda`
 - `sunny`
 - `pink`
+- `YlGnBu`
 
 ## Data Format
 
