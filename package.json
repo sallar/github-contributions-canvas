@@ -7,13 +7,13 @@
     "moment": "^2.22.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.46",
-    "@babel/core": "^7.0.0-beta.46",
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.0.0-beta.46",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^22.4.3",
-    "canvas": "^2.0.0-alpha.12",
-    "jest": "^22.4.3",
+    "babel-jest": "^24.9.0",
+    "canvas": "^2.6.0",
+    "jest": "^24.9.0",
     "regenerator-runtime": "^0.11.1"
   },
   "scripts": {
