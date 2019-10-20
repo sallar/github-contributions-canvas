@@ -2,7 +2,19 @@ import moment from "moment";
 import { themes } from "./themes";
 
 function getTheme(opts = {}) {
-  const { themeName } = opts;
+  const { themeName, customTheme } = opts;
+  if (customTheme) {
+    return {
+      background: customTheme.background || themes.standard.background,
+      text: customTheme.text || themes.standard.text,
+      meta: customTheme.meta || themes.standard.meta,
+      grade4: customTheme.grade4 || themes.standard.grade4,
+      grade3: customTheme.grade3 || themes.standard.grade3,
+      grade2: customTheme.grade2 || themes.standard.grade2,
+      grade1: customTheme.grade1 || themes.standard.grade1,
+      grade0: customTheme.grade0 || themes.standard.grade0
+    };
+  }
   if (themeName in themes) {
     return themes[themeName];
   }
