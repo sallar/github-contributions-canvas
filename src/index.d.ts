@@ -1,13 +1,29 @@
 declare module "github-contributions-canvas" {
-  type DrawContributionsProps = {
-    data: string | null;
+  type YearData = {
+    year: string;
+    total: number;
+    range: {
+      start: string;
+      end: string;
+    };
+  };
+
+  type ContributionData = {
+    date: string;
+    count: number;
+    color: string;
+    intensity: number;
+  };
+
+  type Props = {
+    data: {
+      years: YearData[];
+      contributions: ContributionData[];
+    };
     username: string;
     themeName: string;
     footerText: string;
   };
 
-  function drawContributions(
-    canvas: HTMLCanvasElement,
-    props: DrawContributionsProps
-  ): void;
+  function drawContributions(canvas: HTMLCanvasElement, props: Props);
 }
