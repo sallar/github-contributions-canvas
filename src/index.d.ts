@@ -15,7 +15,7 @@ declare module "github-contributions-canvas" {
     intensity: number;
   };
 
-  type Props = {
+  type DrawContributionsProps = {
     data: {
       years: YearData[];
       contributions: ContributionData[];
@@ -25,5 +25,8 @@ declare module "github-contributions-canvas" {
     footerText: string;
   };
 
-  function drawContributions(canvas: HTMLCanvasElement, props: Props);
+  function drawContributions(
+    canvas: HTMLCanvasElement,
+    props: DrawContributionsProps
+  ): void;
 }
