@@ -1,5 +1,5 @@
 declare module "github-contributions-canvas" {
-  type YearData = {
+  export type YearData = {
     year: string;
     total: number;
     range: {
@@ -8,14 +8,14 @@ declare module "github-contributions-canvas" {
     };
   };
 
-  type ContributionData = {
+  export type ContributionData = {
     date: string;
     count: number;
     color: string;
     intensity: number;
   };
 
-  type DrawContributionsProps = {
+  export type DrawContributionsProps = {
     data: {
       years: YearData[];
       contributions: ContributionData[];
