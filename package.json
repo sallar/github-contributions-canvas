@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "A tool for drawing a heat-map of Github contributions on HTML Canvas",
   "main": "dist/index.js",
+  "types": "src/index.d.ts",
   "dependencies": {
     "moment": "^2.22.1"
   },
