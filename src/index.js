@@ -142,7 +142,7 @@ function drawYear(ctx) {
     var firstMonthIsDec = month == 12 && _y == 0;
     var monthChanged = month !== lastCountedMonth;
 
-    if (!skipAxisLabel && monthChanged && !firstMonthIsDec) {
+    if (!opts.skipAxisLabel && monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
       ctx.fillText(_date.format('MMM'), offsetX + (boxWidth + boxMargin) * _y, offsetY);
       lastCountedMonth = month;
