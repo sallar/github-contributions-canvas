@@ -91,21 +91,22 @@ function drawYear(ctx, opts = {}) {
       })
     );
   }
+  if(!opts.skipHeader){ 
+    const count = new Intl.NumberFormat().format(
+      getContributionCount(graphEntries)
+    );
 
-  const count = new Intl.NumberFormat().format(
-    getContributionCount(graphEntries)
-  );
-
-  ctx.textBaseline = "hanging";
-  ctx.fillStyle = theme.text;
-  ctx.font = `10px '${fontFace}'`;
-  ctx.fillText(
-    `${year.year}: ${count} Contribution${year.total === 1 ? "" : "s"}${
-      thisYear === year.year ? " (so far)" : ""
-    }`,
-    offsetX,
-    offsetY - 17
-  );
+    ctx.textBaseline = "hanging";
+    ctx.fillStyle = theme.text;
+    ctx.font = `10px '${fontFace}'`;
+    ctx.fillText(
+      `${year.year}: ${count} Contribution${year.total === 1 ? "" : "s"}${
+        thisYear === year.year ? " (so far)" : ""
+      }`,
+      offsetX,
+      offsetY - 17
+    );
+  }
 
   for (let y = 0; y < graphEntries.length; y += 1) {
     for (let x = 0; x < graphEntries[y].length; x += 1) {
@@ -131,7 +132,7 @@ function drawYear(ctx, opts = {}) {
     const month = date.month() + 1;
     const firstMonthIsDec = month == 12 && y == 0;
     const monthChanged = month !== lastCountedMonth;
-    if (monthChanged && !firstMonthIsDec) {
+    if (!skipAxisLabel && monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
       ctx.fillText(date.format('MMM'), offsetX + (boxWidth + boxMargin) * y, offsetY);
       lastCountedMonth = month;
@@ -183,8 +184,12 @@ function drawMetaData(ctx, opts = {}) {
 
 export function drawContributions(canvas, opts) {
   const { data, username } = opts;
+  var header = 0;
+  if(!opts.skipHeader) {
+    header = headerHeight;
+  }
   const height =
-    data.years.length * yearHeight + canvasMargin + headerHeight + 10;
+    data.years.length * yearHeight + canvasMargin + header + 10;
   const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
 
   canvas.width = width * scaleFactor;
@@ -193,15 +198,16 @@ export function drawContributions(canvas, opts) {
   const ctx = canvas.getContext("2d");
   ctx.scale(scaleFactor, scaleFactor);
   ctx.textBaseline = "hanging";
-
-  drawMetaData(ctx, {
-    ...opts,
-    width,
-    height
-  });
+  if(!opts.skipHeader) {
+    drawMetaData(ctx, {
+      ...opts,
+      width,
+      height
+    });
+  }
 
   data.years.forEach((year, i) => {
-    const offsetY = yearHeight * i + canvasMargin + headerHeight;
+    const offsetY = yearHeight * i + canvasMargin + header;
     const offsetX = canvasMargin;
     drawYear(ctx, {
       ...opts,
