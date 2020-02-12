@@ -184,12 +184,12 @@ function drawMetaData(ctx, opts = {}) {
 
 export function drawContributions(canvas, opts) {
   const { data, username } = opts;
-  var header = 0;
+  let headerOffset = 0;
   if(!opts.skipHeader) {
-    header = headerHeight;
+    headerOffset = headerHeight;
   }
   const height =
-    data.years.length * yearHeight + canvasMargin + header + 10;
+    data.years.length * yearHeight + canvasMargin + headerOffset + 10;
   const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
 
   canvas.width = width * scaleFactor;
@@ -207,7 +207,7 @@ export function drawContributions(canvas, opts) {
   }
 
   data.years.forEach((year, i) => {
-    const offsetY = yearHeight * i + canvasMargin + header;
+    const offsetY = yearHeight * i + canvasMargin + headerOffset;
     const offsetX = canvasMargin;
     drawYear(ctx, {
       ...opts,
