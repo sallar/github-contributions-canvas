@@ -3,6 +3,20 @@ export const themes = {
     background: "#ffffff",
     text: "#24292e",
     meta: "#767676",
+    radius: 2,
+    stroke:'rgba(27,31,35,.04)',
+    grade4: "#216e39",
+    grade3: "#30a14e",
+    grade2: "#40c463",
+    grade1: "#9be9a8",
+    grade0: "#ebedf0"
+  },
+  // new version of github
+  newGithub: {
+    background: "#ffffff",
+    text: "#24292e",
+    meta: "#767676",
+    radius: 2,
     stroke:'rgba(27,31,35,.04)',
     grade4: "#216e39",
     grade3: "#30a14e",
@@ -12,13 +26,12 @@ export const themes = {
   },
   standard: {
     background: "#ffffff",
-    text: "#24292e",
-    meta: "#767676",
-    stroke:'rgba(27,31,35,.04)',
-    grade4: "#216e39",
-    grade3: "#30a14e",
-    grade2: "#40c463",
-    grade1: "#9be9a8",
+    text: "#000000",
+    meta: "#666666",
+    grade4: "#196127",
+    grade3: "#239a3b",
+    grade2: "#7bc96f",
+    grade1: "#c6e48b",
     grade0: "#ebedf0"
   },
   halloween: {

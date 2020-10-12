@@ -28,7 +28,6 @@ function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke) {
       radius[side] = radius[side] || defaultRadius[side];
     }
   }
-  const offset = stroke ? ctx.lineWidth * 0.5 : 0;
   ctx.beginPath();
   ctx.moveTo(x + radius.tl, y);
   ctx.lineTo(x + width - radius.tr, y);
@@ -87,18 +86,20 @@ function getContributionCount(graphEntries) {
 const DATE_FORMAT = "YYYY-MM-DD";
 const boxWidth = 10;
 const boxMargin = 3;
-const boxRadius = 2;
 const textHeight = 15;
 const defaultFontFace = "IBM Plex Mono";
 const headerHeight = 60;
 const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 8 + canvasMargin;
 
-//const scaleFactor = window.devicePixelRatio || 1;
-
-function drawContributionRect(ctx, x, y, width, height) {
+function drawContributionRect(ctx, x, y, width, height, radius, strokeColor) {
+  const boxRadius = radius || 0;
   drawRoundedRect(ctx, x, y, width, height, boxRadius, true, false);
-  drawRoundedRect(ctx, x + 0.5, y + 0.5, width - 1, height - 1, boxRadius, false, true);
+
+  if (strokeColor) {
+    ctx.strokeStyle = strokeColor;
+    drawRoundedRect(ctx, x + 0.5, y + 0.5, width - 1, height - 1, boxRadius, false, true);
+  }
 }
 
 function drawYear(ctx, opts = {}) {
@@ -159,7 +160,7 @@ function drawYear(ctx, opts = {}) {
       thisYear === year.year ? " (so far)" : ""
     }`,
     offsetX,
-    offsetY - 17
+    offsetY - 20
   );
 
   for (let y = 0; y < graphEntries.length; y += 1) {
@@ -170,13 +171,14 @@ function drawYear(ctx, opts = {}) {
       }
 
       ctx.fillStyle = theme[`grade${day.info.intensity}`];
-      ctx.strokeStyle = theme["stroke"];
 
       drawContributionRect(ctx,
         offsetX + (boxWidth + boxMargin) * x,
         offsetY + textHeight + (boxWidth + boxMargin) * y,
         10,
-        10
+        10,
+        theme.radius,
+        theme.stroke
       );
     }
   }
@@ -223,9 +225,8 @@ function drawMetaData(ctx, opts = {}) {
   ctx.fillText("More", (width - canvasMargin) - 25, 37);
   for (let x = 0; x < 5; x += 1) {
     ctx.fillStyle = theme[`grade${x}`];
-    ctx.strokeStyle = theme["stroke"];
 
-    drawContributionRect(ctx, width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27, textHeight + boxWidth, 10, 10);
+    drawContributionRect(ctx, width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27, textHeight + boxWidth, 10, 10, theme.radius, theme.stroke);
 
     themeGrades -= 1;
   }
