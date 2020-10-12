@@ -1,8 +1,8 @@
 export const themes = {
   __test__: {
     background: "#ffffff",
-    text: "#24292e",
-    meta: "#767676",
+    text: "#ffffff",
+    meta: "#ffffff",
     radius: 2,
     stroke:'rgba(27,31,35,.04)',
     grade4: "#216e39",
