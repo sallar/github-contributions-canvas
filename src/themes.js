@@ -19,6 +19,16 @@ export const themes = {
     grade1: "#c6e48b",
     grade0: "#ebedf0"
   },
+  githubDark: {
+    background: "#101217",
+    text: "#ffffff",
+    meta: "#dddddd",
+    grade4: "#45bb3b",
+    grade3: "#27602a",
+    grade2: "#173b21",
+    grade1: "#102a1c",
+    grade0: "#16191f"
+  },
   halloween: {
     background: "#ffffff",
     text: "#000000",
