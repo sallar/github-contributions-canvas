@@ -22,7 +22,7 @@ function getTheme(opts = {}) {
 }
 
 function getDateInfo(data, date) {
-  return data.contributions.find(contrib => contrib.date === date);
+  return data.contributions.find((contrib) => contrib.date === date);
 }
 
 function getContributionCount(graphEntries) {
@@ -36,6 +36,13 @@ function getContributionCount(graphEntries) {
   }, 0);
 }
 
+function getPixelRatio() {
+  if (typeof window === "undefined") {
+    return 1;
+  }
+  return window.devicePixelRatio || 1;
+}
+
 const DATE_FORMAT = "YYYY-MM-DD";
 const boxWidth = 10;
 const boxMargin = 2;
@@ -44,7 +51,7 @@ const defaultFontFace = "IBM Plex Mono";
 const headerHeight = 60;
 const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 8 + canvasMargin;
-const scaleFactor = window.devicePixelRatio || 1;
+const scaleFactor = getPixelRatio();
 
 function drawYear(ctx, opts = {}) {
   const {
@@ -61,7 +68,7 @@ function drawYear(ctx, opts = {}) {
   const theme = getTheme(opts);
 
   if (firstDate.day() !== 6) {
-    firstDate.day(-(firstDate.day() + 1 % 7));
+    firstDate.day(-(firstDate.day() + (1 % 7)));
   }
 
   const nextDate = firstDate.clone();
@@ -80,10 +87,8 @@ function drawYear(ctx, opts = {}) {
 
   for (let i = 1; i < 7; i += 1) {
     graphEntries.push(
-      firstRowDates.map(dateObj => {
-        const date = moment(dateObj.date)
-          .day(i)
-          .format(DATE_FORMAT);
+      firstRowDates.map((dateObj) => {
+        const date = moment(dateObj.date).day(i).format(DATE_FORMAT);
         return {
           date,
           info: getDateInfo(data, date)
@@ -91,7 +96,7 @@ function drawYear(ctx, opts = {}) {
       })
     );
   }
-  if(!opts.skipHeader){ 
+  if (!opts.skipHeader) {
     const count = new Intl.NumberFormat().format(
       getContributionCount(graphEntries)
     );
@@ -113,7 +118,7 @@ function drawYear(ctx, opts = {}) {
       const day = graphEntries[y][x];
       if (moment(day.date) > today || !day.info) {
         continue;
-      }    
+      }
       const color = theme[`grade${day.info.intensity}`];
       ctx.fillStyle = color;
       ctx.fillRect(
@@ -134,7 +139,11 @@ function drawYear(ctx, opts = {}) {
     const monthChanged = month !== lastCountedMonth;
     if (!opts.skipAxisLabel && monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
-      ctx.fillText(date.format('MMM'), offsetX + (boxWidth + boxMargin) * y, offsetY);
+      ctx.fillText(
+        date.format("MMM"),
+        offsetX + (boxWidth + boxMargin) * y,
+        offsetY
+      );
       lastCountedMonth = month;
     }
   }
@@ -162,11 +171,20 @@ function drawMetaData(ctx, opts = {}) {
   // chart legend
   let themeGrades = 5;
   ctx.fillStyle = theme.text;
-  ctx.fillText('Less', width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 55, 37);
-  ctx.fillText('More', (width - canvasMargin) - 25, 37);
+  ctx.fillText(
+    "Less",
+    width - canvasMargin - (boxWidth + boxMargin) * themeGrades - 55,
+    37
+  );
+  ctx.fillText("More", width - canvasMargin - 25, 37);
   for (let x = 0; x < 5; x += 1) {
     ctx.fillStyle = theme[`grade${x}`];
-    ctx.fillRect(width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27,textHeight + boxWidth,10,10);
+    ctx.fillRect(
+      width - canvasMargin - (boxWidth + boxMargin) * themeGrades - 27,
+      textHeight + boxWidth,
+      10,
+      10
+    );
     themeGrades -= 1;
   }
 
@@ -185,7 +203,7 @@ function drawMetaData(ctx, opts = {}) {
 export function drawContributions(canvas, opts) {
   const { data, username } = opts;
   let headerOffset = 0;
-  if(!opts.skipHeader) {
+  if (!opts.skipHeader) {
     headerOffset = headerHeight;
   }
   const height =
@@ -198,7 +216,7 @@ export function drawContributions(canvas, opts) {
   const ctx = canvas.getContext("2d");
   ctx.scale(scaleFactor, scaleFactor);
   ctx.textBaseline = "hanging";
-  if(!opts.skipHeader) {
+  if (!opts.skipHeader) {
     drawMetaData(ctx, {
       ...opts,
       width,
