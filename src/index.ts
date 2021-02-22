@@ -1,4 +1,11 @@
-import moment from "moment";
+import addWeeks from "date-fns/addWeeks";
+import format from "date-fns/format";
+import getMonth from "date-fns/getMonth";
+import isAfter from "date-fns/isAfter";
+import isBefore from "date-fns/isBefore";
+import parseISO from "date-fns/parseISO";
+import setDay from "date-fns/setDay";
+import startOfWeek from "date-fns/startOfWeek";
 import { themes } from "./themes";
 
 interface DataStructYear {
@@ -67,7 +74,7 @@ function getPixelRatio() {
   return window.devicePixelRatio || 1;
 }
 
-const DATE_FORMAT = "YYYY-MM-DD";
+const DATE_FORMAT = "yyyy-MM-dd";
 const boxWidth = 10;
 const boxMargin = 2;
 const textHeight = 15;
@@ -118,26 +125,25 @@ function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
     data,
     fontFace = defaultFontFace
   } = opts;
-  const thisYear = moment().format("YYYY");
-  const today = year.year === thisYear ? moment() : moment(year.range.end);
-  const start = moment(`${year.year}-01-01`);
-  const firstDate = start.clone();
   const theme = getTheme(opts);
 
-  if (firstDate.day() !== 6) {
-    firstDate.day(-(firstDate.day() + (1 % 7)));
-  }
+  const today = new Date();
+  const thisYear = format(today, "yyyy");
+  const lastDate = year.year === thisYear ? today : parseISO(year.range.end);
+  const firstRealDate = parseISO(`${year.year}-01-01`);
+  const firstDate = startOfWeek(firstRealDate);
 
-  const nextDate = firstDate.clone();
+  let nextDate = firstDate;
   const firstRowDates: GraphEntry[] = [];
   const graphEntries: GraphEntry[][] = [];
 
-  while (nextDate <= today && nextDate.day(7) <= today) {
-    const date = nextDate.format(DATE_FORMAT);
+  while (isBefore(nextDate, lastDate)) {
+    const date = format(nextDate, DATE_FORMAT);
     firstRowDates.push({
       date,
       info: getDateInfo(data, date)
     });
+    nextDate = addWeeks(nextDate, 1);
   }
 
   graphEntries.push(firstRowDates);
@@ -145,9 +151,7 @@ function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
   for (let i = 1; i < 7; i += 1) {
     graphEntries.push(
       firstRowDates.map(dateObj => {
-        const date = moment(dateObj.date)
-          .day(i)
-          .format(DATE_FORMAT);
+        const date = format(setDay(parseISO(dateObj.date), i), DATE_FORMAT);
         return {
           date,
           info: getDateInfo(data, date)
@@ -175,7 +179,8 @@ function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
   for (let y = 0; y < graphEntries.length; y += 1) {
     for (let x = 0; x < graphEntries[y].length; x += 1) {
       const day = graphEntries[y][x];
-      if (moment(day.date) > today || !day.info) {
+      const cellDate = parseISO(day.date);
+      if (isAfter(cellDate, lastDate) || !day.info) {
         continue;
       }
       // @ts-ignore
@@ -193,14 +198,14 @@ function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
   // Draw Month Label
   let lastCountedMonth = 0;
   for (let y = 0; y < graphEntries[0].length; y += 1) {
-    const date = moment(graphEntries[0][y].date);
-    const month = date.month() + 1;
+    const date = parseISO(graphEntries[0][y].date);
+    const month = getMonth(date) + 1;
     const firstMonthIsDec = month == 12 && y == 0;
     const monthChanged = month !== lastCountedMonth;
     if (!opts.skipAxisLabel && monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
       ctx.fillText(
-        date.format("MMM"),
+        format(date, "MMM"),
         offsetX + (boxWidth + boxMargin) * y,
         offsetY
       );
