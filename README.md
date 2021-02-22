@@ -1,6 +1,6 @@
 # Github Contributions on Canvas [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
-A tool for drawing a heat-map of Github contributions on HTML Canvas.
+A tool for drawing a heat-map of Github contributions on HTML Canvas. You can also draw a line graph displaying your contributions over time.
 
 This module is used for drawing user contributions in [this project](https://github-contributions.now.sh).
 
@@ -16,6 +16,17 @@ $ npm install github-contributions-canvas
 import { drawContributions } from "github-contributions-canvas";
 
 drawContributions(canvasEl, {
+  data: contributionData,
+  username: "myusername",
+  themeName: "standard",
+  footerText: "Made by @sallar - github-contributions.now.sh"
+});
+```
+
+```js
+import { drawLineGraph } from "github-contributions-canvas";
+
+drawLineGraph(canvasEl, {
   data: contributionData,
   username: "myusername",
   themeName: "standard",
