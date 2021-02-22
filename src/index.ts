@@ -1,39 +1,63 @@
 import moment from "moment";
 import { themes } from "./themes";
 
-function getTheme(opts = {}) {
-  const { themeName, customTheme } = opts;
-  if (customTheme) {
-    return {
-      background: customTheme.background || themes.standard.background,
-      text: customTheme.text || themes.standard.text,
-      meta: customTheme.meta || themes.standard.meta,
-      grade4: customTheme.grade4 || themes.standard.grade4,
-      grade3: customTheme.grade3 || themes.standard.grade3,
-      grade2: customTheme.grade2 || themes.standard.grade2,
-      grade1: customTheme.grade1 || themes.standard.grade1,
-      grade0: customTheme.grade0 || themes.standard.grade0
-    };
-  }
-  if (themeName in themes) {
-    return themes[themeName];
-  }
-  return themes.standard;
+interface DataStructYear {
+  year: string;
+  total: number;
+  range: {
+    start: string;
+    end: string;
+  };
 }
 
-function getDateInfo(data, date) {
-  return data.contributions.find((contrib) => contrib.date === date);
+interface DataStructContribution {
+  date: string;
+  count: number;
+  color: string;
+  intensity: number;
 }
 
-function getContributionCount(graphEntries) {
-  return graphEntries.reduce((rowTotal, row) => {
-    return (
-      rowTotal +
-      row.reduce((colTotal, col) => {
-        return colTotal + (col.info ? col.info.count : 0);
-      }, 0)
-    );
-  }, 0);
+interface DataStruct {
+  years: DataStructYear[];
+  contributions: DataStructContribution[];
+}
+
+interface GraphEntry {
+  date: string;
+  info?: DataStructContribution;
+}
+
+interface Options {
+  themeName?: keyof typeof themes;
+  customTheme?: Theme;
+  skipHeader?: boolean;
+  skipAxisLabel?: boolean;
+  username: string;
+  data: DataStruct;
+  fontFace?: string;
+  footerText?: string;
+}
+
+interface DrawYearOptions extends Options {
+  year: DataStructYear;
+  offsetX?: number;
+  offsetY?: number;
+}
+
+interface DrawMetadataOptions extends Options {
+  width: number;
+  height: number;
+}
+
+interface Theme {
+  background: string;
+  text: string;
+  meta: string;
+  grade4: string;
+  grade3: string;
+  grade2: string;
+  grade1: string;
+  grade0: string;
 }
 
 function getPixelRatio() {
@@ -53,7 +77,40 @@ const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 8 + canvasMargin;
 const scaleFactor = getPixelRatio();
 
-function drawYear(ctx, opts = {}) {
+function getTheme(opts: Options): Theme {
+  const { themeName, customTheme } = opts;
+  if (customTheme) {
+    return {
+      background: customTheme.background ?? themes.standard.background,
+      text: customTheme.text ?? themes.standard.text,
+      meta: customTheme.meta ?? themes.standard.meta,
+      grade4: customTheme.grade4 ?? themes.standard.grade4,
+      grade3: customTheme.grade3 ?? themes.standard.grade3,
+      grade2: customTheme.grade2 ?? themes.standard.grade2,
+      grade1: customTheme.grade1 ?? themes.standard.grade1,
+      grade0: customTheme.grade0 ?? themes.standard.grade0
+    };
+  }
+  const name = themeName ?? "standard";
+  return themes[name] ?? themes.standard;
+}
+
+function getDateInfo(data: DataStruct, date: string) {
+  return data.contributions.find(contrib => contrib.date === date);
+}
+
+function getContributionCount(graphEntries: GraphEntry[][]) {
+  return graphEntries.reduce((rowTotal, row) => {
+    return (
+      rowTotal +
+      row.reduce((colTotal, col) => {
+        return colTotal + (col.info ? col.info.count : 0);
+      }, 0)
+    );
+  }, 0);
+}
+
+function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
   const {
     year,
     offsetX = 0,
@@ -72,8 +129,8 @@ function drawYear(ctx, opts = {}) {
   }
 
   const nextDate = firstDate.clone();
-  const firstRowDates = [];
-  const graphEntries = [];
+  const firstRowDates: GraphEntry[] = [];
+  const graphEntries: GraphEntry[][] = [];
 
   while (nextDate <= today && nextDate.day(7) <= today) {
     const date = nextDate.format(DATE_FORMAT);
@@ -87,8 +144,10 @@ function drawYear(ctx, opts = {}) {
 
   for (let i = 1; i < 7; i += 1) {
     graphEntries.push(
-      firstRowDates.map((dateObj) => {
-        const date = moment(dateObj.date).day(i).format(DATE_FORMAT);
+      firstRowDates.map(dateObj => {
+        const date = moment(dateObj.date)
+          .day(i)
+          .format(DATE_FORMAT);
         return {
           date,
           info: getDateInfo(data, date)
@@ -119,6 +178,7 @@ function drawYear(ctx, opts = {}) {
       if (moment(day.date) > today || !day.info) {
         continue;
       }
+      // @ts-ignore
       const color = theme[`grade${day.info.intensity}`];
       ctx.fillStyle = color;
       ctx.fillRect(
@@ -149,7 +209,10 @@ function drawYear(ctx, opts = {}) {
   }
 }
 
-function drawMetaData(ctx, opts = {}) {
+function drawMetaData(
+  ctx: CanvasRenderingContext2D,
+  opts: DrawMetadataOptions
+) {
   const {
     username,
     width,
@@ -178,6 +241,7 @@ function drawMetaData(ctx, opts = {}) {
   );
   ctx.fillText("More", width - canvasMargin - 25, 37);
   for (let x = 0; x < 5; x += 1) {
+    // @ts-ignore
     ctx.fillStyle = theme[`grade${x}`];
     ctx.fillRect(
       width - canvasMargin - (boxWidth + boxMargin) * themeGrades - 27,
@@ -200,8 +264,8 @@ function drawMetaData(ctx, opts = {}) {
   ctx.stroke();
 }
 
-export function drawContributions(canvas, opts) {
-  const { data, username } = opts;
+export function drawContributions(canvas: HTMLCanvasElement, opts: Options) {
+  const { data } = opts;
   let headerOffset = 0;
   if (!opts.skipHeader) {
     headerOffset = headerHeight;
@@ -214,6 +278,11 @@ export function drawContributions(canvas, opts) {
   canvas.height = height * scaleFactor;
 
   const ctx = canvas.getContext("2d");
+
+  if (!ctx) {
+    throw new Error("Could not get 2d context from Canvas");
+  }
+
   ctx.scale(scaleFactor, scaleFactor);
   ctx.textBaseline = "hanging";
   if (!opts.skipHeader) {
