@@ -19,7 +19,9 @@ drawContributions(canvasEl, {
   data: contributionData,
   username: "myusername",
   themeName: "standard",
-  footerText: "Made by @sallar - github-contributions.now.sh"
+  footerText: "Made by @sallar - github-contributions.now.sh",
+  skipHeader: false, // false by default
+  skipAxisLabel: false, // false by default
 });
 ```
 
