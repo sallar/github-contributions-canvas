@@ -1,6 +1,52 @@
 import moment from "moment";
 import { themes } from "./themes";
 
+/**
+ * Draws a rounded rectangle using the current state of the canvas.
+ * If you omit the last three params, it will draw a rectangle
+ * outline with a 5 pixel border radius
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Number} x The top left x coordinate
+ * @param {Number} y The top left y coordinate
+ * @param {Number} width The width of the rectangle
+ * @param {Number} height The height of the rectangle
+ * @param {Number} [radius = 5] The corner radius; It can also be an object
+ *                 to specify different radii for corners
+ * @param {Number} [radius.tl = 0] Top left
+ * @param {Number} [radius.tr = 0] Top right
+ * @param {Number} [radius.br = 0] Bottom right
+ * @param {Number} [radius.bl = 0] Bottom left
+ * @param {Boolean} [fill = false] Whether to fill the rectangle.
+ * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
+ */
+function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof radius === "number") {
+    radius = { tl: radius, tr: radius, br: radius, bl: radius };
+  } else {
+    let defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+    for (let side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
+}
+
 function getTheme(opts = {}) {
   const { themeName, customTheme } = opts;
   if (customTheme) {
@@ -8,6 +54,7 @@ function getTheme(opts = {}) {
       background: customTheme.background || themes.standard.background,
       text: customTheme.text || themes.standard.text,
       meta: customTheme.meta || themes.standard.meta,
+      stroke: customTheme.stroke || themes.standard.stroke,
       grade4: customTheme.grade4 || themes.standard.grade4,
       grade3: customTheme.grade3 || themes.standard.grade3,
       grade2: customTheme.grade2 || themes.standard.grade2,
@@ -38,13 +85,22 @@ function getContributionCount(graphEntries) {
 
 const DATE_FORMAT = "YYYY-MM-DD";
 const boxWidth = 10;
-const boxMargin = 2;
+const boxMargin = 3;
 const textHeight = 15;
 const defaultFontFace = "IBM Plex Mono";
 const headerHeight = 60;
 const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 8 + canvasMargin;
-const scaleFactor = window.devicePixelRatio || 1;
+
+function drawContributionRect(ctx, x, y, width, height, radius, strokeColor) {
+  const boxRadius = radius || 0;
+  drawRoundedRect(ctx, x, y, width, height, boxRadius, true, false);
+
+  if (strokeColor) {
+    ctx.strokeStyle = strokeColor;
+    drawRoundedRect(ctx, x + 0.5, y + 0.5, width - 1, height - 1, boxRadius, false, true);
+  }
+}
 
 function drawYear(ctx, opts = {}) {
   const {
@@ -98,13 +154,13 @@ function drawYear(ctx, opts = {}) {
 
   ctx.textBaseline = "hanging";
   ctx.fillStyle = theme.text;
-  ctx.font = `10px '${fontFace}'`;
+  ctx.font = `14px '${fontFace}'`;
   ctx.fillText(
     `${year.year}: ${count} Contribution${year.total === 1 ? "" : "s"}${
       thisYear === year.year ? " (so far)" : ""
     }`,
     offsetX,
-    offsetY - 17
+    offsetY - 20
   );
 
   for (let y = 0; y < graphEntries.length; y += 1) {
@@ -112,14 +168,17 @@ function drawYear(ctx, opts = {}) {
       const day = graphEntries[y][x];
       if (moment(day.date) > today || !day.info) {
         continue;
-      }    
-      const color = theme[`grade${day.info.intensity}`];
-      ctx.fillStyle = color;
-      ctx.fillRect(
+      }
+
+      ctx.fillStyle = theme[`grade${day.info.intensity}`];
+
+      drawContributionRect(ctx,
         offsetX + (boxWidth + boxMargin) * x,
         offsetY + textHeight + (boxWidth + boxMargin) * y,
         10,
-        10
+        10,
+        theme.radius,
+        theme.stroke
       );
     }
   }
@@ -133,7 +192,8 @@ function drawYear(ctx, opts = {}) {
     const monthChanged = month !== lastCountedMonth;
     if (monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
-      ctx.fillText(date.format('MMM'), offsetX + (boxWidth + boxMargin) * y, offsetY);
+      ctx.font = `10px '${fontFace}'`;
+      ctx.fillText(date.format("MMM"), offsetX + (boxWidth + boxMargin) * y, offsetY);
       lastCountedMonth = month;
     }
   }
@@ -161,11 +221,13 @@ function drawMetaData(ctx, opts = {}) {
   // chart legend
   let themeGrades = 5;
   ctx.fillStyle = theme.text;
-  ctx.fillText('Less', width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 55, 37);
-  ctx.fillText('More', (width - canvasMargin) - 25, 37);
+  ctx.fillText("Less", width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 55, 37);
+  ctx.fillText("More", (width - canvasMargin) - 25, 37);
   for (let x = 0; x < 5; x += 1) {
     ctx.fillStyle = theme[`grade${x}`];
-    ctx.fillRect(width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27,textHeight + boxWidth,10,10);
+
+    drawContributionRect(ctx, width - canvasMargin - (boxWidth + boxMargin) * (themeGrades) - 27, textHeight + boxWidth, 10, 10, theme.radius, theme.stroke);
+
     themeGrades -= 1;
   }
 
@@ -182,7 +244,7 @@ function drawMetaData(ctx, opts = {}) {
 }
 
 export function drawContributions(canvas, opts) {
-  const { data, username } = opts;
+  const { data, username, scaleFactor } = opts;
   const height =
     data.years.length * yearHeight + canvasMargin + headerHeight + 10;
   const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
