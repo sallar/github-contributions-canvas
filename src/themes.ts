@@ -13,6 +13,16 @@ export const themes = {
     background: "#ffffff",
     text: "#000000",
     meta: "#666666",
+    grade4: "#216e39",
+    grade3: "#30a14e",
+    grade2: "#40c463",
+    grade1: "#9be9a8",
+    grade0: "#ebedf0"
+  },
+  classic: {
+    background: "#ffffff",
+    text: "#000000",
+    meta: "#666666",
     grade4: "#196127",
     grade3: "#239a3b",
     grade2: "#7bc96f",
@@ -23,11 +33,11 @@ export const themes = {
     background: "#101217",
     text: "#ffffff",
     meta: "#dddddd",
-    grade4: "#45bb3b",
-    grade3: "#27602a",
-    grade2: "#173b21",
-    grade1: "#102a1c",
-    grade0: "#16191f"
+    grade4: "#27d545",
+    grade3: "#10983d",
+    grade2: "#00602d",
+    grade1: "#003820",
+    grade0: "#161b22"
   },
   halloween: {
     background: "#ffffff",

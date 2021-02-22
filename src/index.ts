@@ -310,3 +310,5 @@ export function drawContributions(canvas: HTMLCanvasElement, opts: Options) {
     });
   });
 }
+
+export { themes } from "./themes";
