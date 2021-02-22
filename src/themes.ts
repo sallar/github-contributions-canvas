@@ -109,7 +109,8 @@ export const themes = {
     grade1: "#e48bdc",
     grade0: "#ebedf0"
   },
-  YlGnBu: { // http://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=5
+  YlGnBu: {
+    // http://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=5
     background: "#ffffff",
     text: "#000000",
     meta: "#666666",

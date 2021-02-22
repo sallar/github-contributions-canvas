@@ -9,7 +9,7 @@ registerFont(path.resolve(__dirname, "ibmplexmono.ttf"), {
 });
 
 test("draws contributions correctly", () => {
-  drawContributions(canvas, {
+  drawContributions(canvas as any, {
     data: mockData,
     username: "sallar",
     footerText: "test",
