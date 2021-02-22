@@ -200,7 +200,7 @@ function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
   for (let y = 0; y < graphEntries[0].length; y += 1) {
     const date = parseISO(graphEntries[0][y].date);
     const month = getMonth(date) + 1;
-    const firstMonthIsDec = month == 12 && y == 0;
+    const firstMonthIsDec = month === 12 && y === 0;
     const monthChanged = month !== lastCountedMonth;
     if (!opts.skipAxisLabel && monthChanged && !firstMonthIsDec) {
       ctx.fillStyle = theme.meta;
