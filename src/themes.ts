@@ -129,5 +129,15 @@ export const themes = {
     grade2: "#41b6c4",
     grade1: "#a1dab4",
     grade0: "#ebedf0"
+  },
+  solarizedDark: {
+    background: "#002b36",
+    text: "#93a1a1",
+    meta: "#586e75",
+    grade4: "#d33682",
+    grade3: "#b58900",
+    grade2: "#2aa198",
+    grade1: "#268bd2",
+    grade0: "#073642"
   }
 };
