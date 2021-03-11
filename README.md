@@ -38,8 +38,8 @@ Currently the available themes are:
 - `sunny`
 - `pink`
 - `YlGnBu`
-- `Solarized Dark`
-- `Solarized Light`
+- `solarizedDark`
+- `solarizedLight`
 
 ## Data Format
 
