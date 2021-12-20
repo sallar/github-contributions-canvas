@@ -35,6 +35,7 @@ interface GraphEntry {
 }
 
 interface Options {
+  scaleFactor?: number;
   themeName?: keyof typeof themes;
   customTheme?: Theme;
   skipHeader?: boolean;
@@ -82,7 +83,6 @@ const defaultFontFace = "IBM Plex Mono";
 const headerHeight = 60;
 const canvasMargin = 20;
 const yearHeight = textHeight + (boxWidth + boxMargin) * 8 + canvasMargin;
-const scaleFactor = getPixelRatio();
 
 function getTheme(opts: Options): Theme {
   const { themeName, customTheme } = opts;
@@ -279,6 +279,12 @@ export function drawContributions(canvas: HTMLCanvasElement, opts: Options) {
     data.years.length * yearHeight + canvasMargin + headerOffset + 10;
   const width = 53 * (boxWidth + boxMargin) + canvasMargin * 2;
 
+  let scaleFactor;
+  if (!opts.scaleFactor) {
+    scaleFactor = getPixelRatio();
+  } else {
+    scaleFactor = opts.scaleFactor;
+  }
   canvas.width = width * scaleFactor;
   canvas.height = height * scaleFactor;
 
