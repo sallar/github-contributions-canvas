@@ -223,6 +223,7 @@ function drawMetaData(
     width,
     height,
     footerText,
+    data,
     fontFace = defaultFontFace
   } = opts;
   const theme = getTheme(opts);
@@ -262,9 +263,20 @@ function drawMetaData(
   ctx.font = `20px '${fontFace}'`;
   ctx.fillText(`@${username} on GitHub`, canvasMargin, canvasMargin);
 
+  let totalContributions = 0;
+  for (const year of data.years) {
+    totalContributions += year.total;
+  }
+  ctx.font = `10px '${fontFace}'`;
+  ctx.fillText(
+    `Total Contributions: ${totalContributions}`,
+    canvasMargin,
+    canvasMargin + 30
+  );
+
   ctx.beginPath();
-  ctx.moveTo(canvasMargin, 55);
-  ctx.lineTo(width - canvasMargin, 55);
+  ctx.moveTo(canvasMargin, 55 + 10);
+  ctx.lineTo(width - canvasMargin, 55 + 10);
   ctx.strokeStyle = theme.grade0;
   ctx.stroke();
 }
@@ -294,12 +306,13 @@ export function drawContributions(canvas: HTMLCanvasElement, opts: Options) {
     drawMetaData(ctx, {
       ...opts,
       width,
-      height
+      height,
+      data
     });
   }
 
   data.years.forEach((year, i) => {
-    const offsetY = yearHeight * i + canvasMargin + headerOffset;
+    const offsetY = yearHeight * i + canvasMargin + headerOffset + 10;
     const offsetX = canvasMargin;
     drawYear(ctx, {
       ...opts,

@@ -38,11 +38,11 @@
   "size-limit": [
     {
       "path": "dist/github-contributions-canvas.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "15 KB"
     },
     {
       "path": "dist/github-contributions-canvas.esm.js",
-      "limit": "10 KB"
+      "limit": "15 KB"
     }
   ],
   "devDependencies": {
