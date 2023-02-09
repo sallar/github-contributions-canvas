@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0",
+  "version": "0.6.1-0",
   "license": "MIT",
   "description": "A tool for drawing a heat-map of Github contributions on HTML Canvas",
   "main": "dist/index.js",
@@ -46,15 +46,15 @@
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.9.2",
-    "canvas": "^2.6.1",
-    "husky": "^5.1.0",
-    "size-limit": "^4.9.2",
+    "@size-limit/preset-small-lib": "^8.1.2",
+    "canvas": "^2.11.0",
+    "husky": "^8.0.3",
+    "size-limit": "^8.1.2",
     "tsdx": "^0.14.1",
-    "tslib": "^2.1.0",
-    "typescript": "^4.1.5"
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
-    "date-fns": "^2.17.0"
+    "date-fns": "^2.29.3"
   }
 }
