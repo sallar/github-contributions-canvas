@@ -106,17 +106,6 @@ function getDateInfo(data: DataStruct, date: string) {
   return data.contributions.find(contrib => contrib.date === date);
 }
 
-function getContributionCount(graphEntries: GraphEntry[][]) {
-  return graphEntries.reduce((rowTotal, row) => {
-    return (
-      rowTotal +
-      row.reduce((colTotal, col) => {
-        return colTotal + (col.info ? col.info.count : 0);
-      }, 0)
-    );
-  }, 0);
-}
-
 function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
   const {
     year,
@@ -160,15 +149,11 @@ function drawYear(ctx: CanvasRenderingContext2D, opts: DrawYearOptions) {
     );
   }
   if (!opts.skipHeader) {
-    const count = new Intl.NumberFormat().format(
-      getContributionCount(graphEntries)
-    );
-
     ctx.textBaseline = "hanging";
     ctx.fillStyle = theme.text;
     ctx.font = `10px '${fontFace}'`;
     ctx.fillText(
-      `${year.year}: ${count} Contribution${year.total === 1 ? "" : "s"}${
+      `${year.year}: ${year.total} Contribution${year.total === 1 ? "" : "s"}${
         thisYear === year.year ? " (so far)" : ""
       }`,
       offsetX,
