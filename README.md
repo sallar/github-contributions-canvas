@@ -25,7 +25,7 @@ drawContributions(canvasEl, {
 
 ## Available Themes
 
-The themes are defined in the [`src/themes.js`](src/themes.js) file.
+The themes are defined in the [`src/themes.ts`](src/themes.ts) file.
 Currently the available themes are:
 
 - `standard`
